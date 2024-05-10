@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS `courses` (
     `description` VARCHAR(100),
     `status` VARCHAR(7) NOT NULL,
     `creation_date` DATE,
-    `deactivate_date` DATE,
+    `inactive_date` DATE,
     `instructor_id` INTEGER
 );
