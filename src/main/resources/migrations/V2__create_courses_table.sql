@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS `courses` (
     `status` VARCHAR(7) NOT NULL,
     `creation_date` DATE,
     `inactive_date` DATE,
-    `instructor_id` INTEGER
+    `instructor_id` INTEGER NOT NULL
 );
