@@ -2,7 +2,7 @@ package com.alura.chalenge.application.enrolls.services;
 
 import com.alura.chalenge.application.courses.Course;
 import com.alura.chalenge.application.courses.exceptions.CourseInactiveException;
-import com.alura.chalenge.application.courses.exceptions.CourseNotFoundException;
+import com.alura.chalenge.application.courses.exceptions.CourseNotFoundExceptionException;
 import com.alura.chalenge.application.courses.services.CourseService;
 import com.alura.chalenge.application.enrolls.Enroll;
 import com.alura.chalenge.application.enrolls.EnrollRepository;
@@ -12,10 +12,12 @@ import com.alura.chalenge.application.shared.interfaces.EntityService;
 import com.alura.chalenge.application.users.User;
 import com.alura.chalenge.application.users.exceptions.UserNotFoundException;
 import com.alura.chalenge.application.users.services.UserService;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-public class EnrollEntityServiceImpl implements EntityService<Enroll> {
+@Service
+public class EnrollEntityServiceImpl implements EnrollService {
     private final EnrollRepository enrollRepository;
     private final CourseService courseService;
     private final UserService userService;
@@ -38,7 +40,7 @@ public class EnrollEntityServiceImpl implements EntityService<Enroll> {
             enroll.setStudent(student);
 
             return enrollRepository.save(enroll);
-        } catch(CourseInactiveException | UserNotFoundException | CourseNotFoundException | StudentAlreadyEnrolledInTheCourseException exception) {
+        } catch(CourseInactiveException | UserNotFoundException | CourseNotFoundExceptionException | StudentAlreadyEnrolledInTheCourseException exception) {
             throw new EntityCreationException(exception.getMessage());
         }
     }

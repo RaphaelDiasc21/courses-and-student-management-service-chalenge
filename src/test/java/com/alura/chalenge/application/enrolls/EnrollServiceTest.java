@@ -2,7 +2,7 @@ package com.alura.chalenge.application.enrolls;
 
 import com.alura.chalenge.application.courses.Course;
 import com.alura.chalenge.application.courses.exceptions.CourseInactiveException;
-import com.alura.chalenge.application.courses.exceptions.CourseNotFoundException;
+import com.alura.chalenge.application.courses.exceptions.CourseNotFoundExceptionException;
 import com.alura.chalenge.application.courses.services.CourseServiceImpl;
 import com.alura.chalenge.application.enrolls.services.EnrollEntityServiceImpl;
 import com.alura.chalenge.application.shared.enums.Status;
@@ -37,7 +37,7 @@ public class EnrollServiceTest {
     EnrollRepository enrollRepository;
 
     @Test
-    void given_enroll_then_createSuccessfully() throws UserNotFoundException, CourseNotFoundException, CourseInactiveException {
+    void given_enroll_then_createSuccessfully() throws UserNotFoundException, CourseNotFoundExceptionException, CourseInactiveException {
         Course course = new Course();
         course.setId(1l);
 
@@ -56,7 +56,7 @@ public class EnrollServiceTest {
     }
 
     @Test
-    void given_enroll_then_createFailedBecauseCourseIsInactive() throws CourseNotFoundException, CourseInactiveException {
+    void given_enroll_then_createFailedBecauseCourseIsInactive() throws CourseNotFoundExceptionException, CourseInactiveException {
         Course course = new Course();
         course.setId(1l);
         course.setStatus(Status.INACTIVE);
