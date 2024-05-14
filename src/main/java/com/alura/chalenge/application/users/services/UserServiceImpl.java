@@ -30,9 +30,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findInstructorById(Long id) throws InstructorNotFoundException {
-        return userRepository.findByIdAndRoleEquals(id, Role.INSTRUCTOR)
-                .orElseThrow(() -> new InstructorNotFoundException(id));
+    public User findInstructorByEmail(String email) throws InstructorNotFoundException {
+        return userRepository.findByEmailAndRoleEquals(email, Role.INSTRUCTOR)
+                .orElseThrow(() -> new InstructorNotFoundException(email));
     }
 
     @Override
@@ -40,6 +40,12 @@ public class UserServiceImpl implements UserService {
         return userRepository
                 .findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElse(null);
     }
 
     private User findByEmailOrUsername(String email, String username) {

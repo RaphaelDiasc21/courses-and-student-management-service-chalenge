@@ -7,6 +7,7 @@ import com.alura.chalenge.application.users.exceptions.UserNotFoundException;
 
 
 public interface UserService extends EntityService<User> {
-    User findInstructorById(Long id) throws InstructorNotFoundException;
+    User findInstructorByEmail(String email) throws InstructorNotFoundException;
     User findById(Long id) throws UserNotFoundException;
+    User findByUsername(String username);
 }
