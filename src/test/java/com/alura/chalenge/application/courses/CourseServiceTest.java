@@ -3,6 +3,7 @@ package com.alura.chalenge.application.courses;
 import com.alura.chalenge.application.courses.services.CourseServiceImpl;
 import com.alura.chalenge.application.shared.enums.Role;
 import com.alura.chalenge.application.shared.exceptions.EntityCreationException;
+import com.alura.chalenge.application.shared.exceptions.EntityNotFoundException;
 import com.alura.chalenge.application.users.User;
 import com.alura.chalenge.application.users.exceptions.InstructorNotFoundException;
 import com.alura.chalenge.application.users.services.UserServiceImpl;
@@ -38,7 +39,7 @@ public class CourseServiceTest {
         course.setInstructor(courseInstructor);
 
         Mockito.when(courseRepository.findByCode(any())).thenReturn(Optional.empty());
-        Mockito.when(userService.findInstructorById(any())).thenReturn(courseInstructor);
+        Mockito.when(userService.findInstructorByEmail(any())).thenReturn(courseInstructor);
 
         assertDoesNotThrow(() -> courseService.create(course));
         Mockito.verify(courseRepository,Mockito.times(1)).save(any());
@@ -74,10 +75,10 @@ public class CourseServiceTest {
         course.setInstructor(courseInstructor);
 
         Mockito.when(courseRepository.findByCode(any())).thenReturn(Optional.empty());
-        Mockito.when(userService.findInstructorById(any())).thenThrow(InstructorNotFoundException.class);
+        Mockito.when(userService.findInstructorByEmail(any())).thenThrow(InstructorNotFoundException.class);
 
         assertThrows(
-                EntityCreationException.class,
+                EntityNotFoundException.class,
                 () -> courseService.create(course)
         );
     }

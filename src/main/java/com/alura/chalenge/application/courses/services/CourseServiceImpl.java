@@ -3,10 +3,11 @@
 import com.alura.chalenge.application.courses.Course;
 import com.alura.chalenge.application.courses.CourseRepository;
 import com.alura.chalenge.application.courses.exceptions.*;
+import com.alura.chalenge.application.courses.specifications.SearchCourseSpecification;
 import com.alura.chalenge.application.shared.enums.Status;
 import com.alura.chalenge.application.shared.exceptions.EntityCreationException;
+import com.alura.chalenge.application.shared.exceptions.EntityNotFoundException;
 import com.alura.chalenge.application.users.User;
-import com.alura.chalenge.application.users.exceptions.InstructorNotFoundException;
 import com.alura.chalenge.application.users.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
-@Service
+ @Service
 public class CourseServiceImpl implements CourseService {
     final CourseRepository courseRepository;
     final UserService userService;
@@ -25,51 +26,48 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course create(Course course) throws EntityCreationException {
+    public Course create(Course course) throws EntityCreationException, EntityNotFoundException {
         try {
             isCodeAlreadyRegistered(course.getCode());
-            User user = userService.findInstructorById(course.getInstructor().getId());
+            User user = userService.findInstructorByEmail(course.getInstructor().getEmail());
             course.setInstructor(user);
 
             return courseRepository.save(course);
-        } catch(InstructorNotFoundException | CourseWithCodeAlreadyRegisteredException exception) {
+        } catch(CourseWithCodeAlreadyRegisteredException exception) {
             throw new EntityCreationException(exception.getMessage());
         }
     }
 
     @Override
-    public Course inactivateCourse(String code) throws InactivateCourseException {
+    public void inactivateCourse(String code) throws InactivateCourseException {
         try {
             Course course = findByCode(code);
 
             course.setStatus(Status.INACTIVE);
             course.setInactiveDate(LocalDate.now());
 
-            return courseRepository.save(course);
-        } catch(CourseWithCodeNotFoundException exception) {
+            courseRepository.save(course);
+        } catch(CourseWithCodeNotFoundExceptionException exception) {
             throw new InactivateCourseException(exception.getMessage());
         }
     }
 
      @Override
-     public boolean isCourseActive(Long id) throws CourseNotFoundException {
-          Course course = findById(id);
-          return course.getStatus().equals(Status.ACTIVE);
-     }
-
      public Page<Course> search(Status status, Pageable pageable) {
-        return courseRepository.findByStatus(status,pageable);
+         SearchCourseSpecification searchCourseSpecification = new SearchCourseSpecification(status);
+
+        return courseRepository.findAll(searchCourseSpecification,pageable);
     }
 
     @Override
-    public Course findById(Long id) throws CourseNotFoundException {
+    public Course findById(Long id) throws CourseNotFoundExceptionException {
         return courseRepository
                 .findById(id)
-                .orElseThrow(() -> new CourseNotFoundException(id));
+                .orElseThrow(() -> new CourseNotFoundExceptionException(id));
     }
 
     @Override
-    public Course findCourseByIdAndActive(Long id) throws CourseNotFoundException, CourseInactiveException {
+    public Course findCourseByIdAndActive(Long id) throws CourseNotFoundExceptionException, CourseInactiveException {
         Course course = this.findById(id);
         if(course.getStatus().equals(Status.INACTIVE)) throw new CourseInactiveException(id);
         return course;
@@ -78,14 +76,14 @@ public class CourseServiceImpl implements CourseService {
     private void isCodeAlreadyRegistered(String code) throws CourseWithCodeAlreadyRegisteredException {
         try {
             findByCode(code);
-        } catch(CourseWithCodeNotFoundException exception) {
+        } catch(CourseWithCodeNotFoundExceptionException exception) {
             return;
         }
        throw new CourseWithCodeAlreadyRegisteredException(code);
     }
 
-    private Course findByCode(String code) throws CourseWithCodeNotFoundException {
+    private Course findByCode(String code) throws CourseWithCodeNotFoundExceptionException {
          return courseRepository.findByCode(code)
-                 .orElseThrow(() -> new CourseWithCodeNotFoundException(code));
+                 .orElseThrow(() -> new CourseWithCodeNotFoundExceptionException(code));
     }
 }
