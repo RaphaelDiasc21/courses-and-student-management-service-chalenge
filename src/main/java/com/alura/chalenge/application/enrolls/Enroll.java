@@ -1,10 +1,11 @@
 package com.alura.chalenge.application.enrolls;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.alura.chalenge.application.courses.Course;
 import com.alura.chalenge.application.users.User;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,12 +26,12 @@ public class Enroll {
 
     @OneToOne
     @JoinColumn(name = "user_id",referencedColumnName = "id")
-    private User user;
+    private User student;
 
     @OneToOne
     @JoinColumn(name = "course_id",referencedColumnName = "id")
     private Course course;
 
     @Column(name = "enroll_date")
-    private Date enrollDate;
+    private LocalDate enrollDate = LocalDate.now();
 }

@@ -1,10 +1,12 @@
 package com.alura.chalenge.application.courses;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.alura.chalenge.application.shared.enums.Status;
 import com.alura.chalenge.application.users.User;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -38,10 +40,10 @@ public class Course {
     private Status status;
 
     @Column(name = "creation_date")
-    private Date creationDate;
+    private LocalDate creationDate = LocalDate.now();
 
     @Column(name = "inactive_date")
-    private Date inactiveDate;
+    private LocalDate inactiveDate;
 
     @ManyToOne
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")

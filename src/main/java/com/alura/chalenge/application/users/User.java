@@ -1,9 +1,11 @@
 package com.alura.chalenge.application.users;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.alura.chalenge.application.shared.enums.Role;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -38,5 +40,5 @@ public class User {
     private Role role;
 
     @Column(name = "creation_date")
-    private Date creationDate;
+    private LocalDate creation_date = LocalDate.now();
 }
