@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,8 +27,8 @@ public class EnrollRepositoryTest {
 
         Enroll enroll = new Enroll();
         enroll.setCourse(course);
-        enroll.setUser(user);
-        enroll.setEnrollDate(new Date());
+        enroll.setStudent(user);
+        enroll.setEnrollDate(LocalDate.now());
 
         Enroll enrollSaved = enrollRepository.save(enroll);
         assertNotNull(enrollSaved.getId());
@@ -43,7 +43,7 @@ public class EnrollRepositoryTest {
         course.setId(1l);
 
         Enroll enroll = new Enroll();
-        enroll.setEnrollDate(new Date());
+        enroll.setEnrollDate(LocalDate.now());
 
         assertThrows(DataIntegrityViolationException.class,
                 () -> enrollRepository.save(enroll));
