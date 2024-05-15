@@ -3,6 +3,7 @@
 import com.alura.chalenge.application.courses.Course;
 import com.alura.chalenge.application.courses.CourseRepository;
 import com.alura.chalenge.application.courses.exceptions.*;
+import com.alura.chalenge.application.courses.projections.CourseIdProjection;
 import com.alura.chalenge.application.courses.specifications.SearchCourseSpecification;
 import com.alura.chalenge.application.shared.enums.Status;
 import com.alura.chalenge.application.shared.exceptions.EntityCreationException;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
  @Service
 public class CourseServiceImpl implements CourseService {
@@ -73,6 +76,13 @@ public class CourseServiceImpl implements CourseService {
         return course;
     }
 
+    @Override
+    public List<Long> findCoursesIds() {
+        List<CourseIdProjection> courseIdProjectionList = courseRepository.findCoursesIds();
+        return courseIdProjectionList.stream()
+                .map(courseIdProjection -> courseIdProjection.getId())
+                .collect(Collectors.toList());
+    }
     private void isCodeAlreadyRegistered(String code) throws CourseWithCodeAlreadyRegisteredException {
         try {
             findByCode(code);

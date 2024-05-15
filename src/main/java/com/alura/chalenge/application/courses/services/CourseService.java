@@ -9,9 +9,12 @@ import com.alura.chalenge.application.shared.interfaces.EntityService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface CourseService extends EntityService<Course> {
     void inactivateCourse(String code) throws InactivateCourseException;
     Course findById(Long id) throws CourseNotFoundExceptionException;
     Course findCourseByIdAndActive(Long id) throws CourseNotFoundExceptionException, CourseInactiveException;
     Page<Course> search(Status status, Pageable pageable);
+    List<Long> findCoursesIds();
 }
