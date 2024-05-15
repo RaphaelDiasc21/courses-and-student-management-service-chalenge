@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `courses` (
     `code` VARCHAR(10) NOT NULL UNIQUE,
     `name` VARCHAR(50) NOT NULL,
     `description` VARCHAR(100),
-    `status` VARCHAR(7) NOT NULL,
+    `status` VARCHAR(8) NOT NULL,
     `creation_date` DATE,
     `inactive_date` DATE,
     `instructor_id` INTEGER NOT NULL
