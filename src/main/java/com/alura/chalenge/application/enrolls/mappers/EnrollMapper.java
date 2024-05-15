@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface EnrollMapper {
 
-    @Mapping(source = "dto.studentId",target = "student.id")
+    @Mapping(source = "dto.studentEmail",target = "student.email")
     @Mapping(source = "dto.courseId",target = "course.id")
     Enroll toEntity(EnrollCreateDTO dto);
 }

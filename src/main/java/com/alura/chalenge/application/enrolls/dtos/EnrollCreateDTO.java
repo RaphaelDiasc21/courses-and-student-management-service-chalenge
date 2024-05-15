@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class EnrollCreateDTO {
-    Long studentId;
+    String studentEmail;
     Long courseId;
 }
