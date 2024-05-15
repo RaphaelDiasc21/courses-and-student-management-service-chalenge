@@ -8,6 +8,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class NPS {
     private Course course;
-    private Integer score;
+    private float score;
     private String nps;
 }

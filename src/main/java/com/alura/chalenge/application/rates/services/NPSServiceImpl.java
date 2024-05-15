@@ -33,7 +33,7 @@ public class NPSServiceImpl implements NPSService {
         coursesIds.stream().forEach(courseId -> {
             if(enrollService.findByCourseId(courseId).size() > 4) {
                 List<Rate> rates = rateRepository.findByCourseId(courseId);
-                int npsScore = calculateNPSScore(rates);
+                float npsScore = calculateNPSScore(rates);
                 String npsResult = getNPSResult(npsScore);
 
                 try {
@@ -49,7 +49,7 @@ public class NPSServiceImpl implements NPSService {
         return npsList;
     }
 
-    private Integer calculateNPSScore(List<Rate> rates) {
+    private float calculateNPSScore(List<Rate> rates) {
         int promotes = 0;
         int detractors = 0;
 
@@ -58,17 +58,17 @@ public class NPSServiceImpl implements NPSService {
             if(rate.getRate() < 6) detractors = detractors + 1;
         }
 
-        int promotesAndDetractorsDifference = promotes - detractors;
+        float promotesAndDetractorsDifference = promotes - detractors;
 
-        if(promotesAndDetractorsDifference == 0) return 0;
+        if(promotesAndDetractorsDifference == 0) return 0f;
 
         return (promotesAndDetractorsDifference / rates.size()) * 100;
     }
 
-    private String getNPSResult(int npsScore) {
-        if(npsScore >= 75) return "Excelente";
-        if(npsScore >= 50) return "Muito bom";
-        if(npsScore >= 0) return "Razoavel";
+    private String getNPSResult(float npsScore) {
+        if(npsScore >= 75f) return "Excelente";
+        if(npsScore >= 50f) return "Muito bom";
+        if(npsScore >= 0.0) return "Razoavel";
         return "Ruim";
     }
 
