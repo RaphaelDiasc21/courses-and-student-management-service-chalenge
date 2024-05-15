@@ -6,7 +6,9 @@ import com.alura.chalenge.application.users.User;
 import com.alura.chalenge.application.users.UserRepository;
 import com.alura.chalenge.application.users.exceptions.EmailOrUsernameAlreadyRegisteredException;
 import com.alura.chalenge.application.users.exceptions.InstructorNotFoundException;
+import com.alura.chalenge.application.users.exceptions.UserNotFoundByEmailException;
 import com.alura.chalenge.application.users.exceptions.UserNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -14,15 +16,18 @@ import java.util.Objects;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    UserServiceImpl(UserRepository userRepository) {
+    UserServiceImpl(UserRepository userRepository,PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public User create(User user) throws EntityCreationException {
         try {
             isUserAlreadyRegistered(user.getEmail(),user.getUsername());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(user);
         } catch (EmailOrUsernameAlreadyRegisteredException exception) {
             throw new EntityCreationException(exception.getMessage());
@@ -48,8 +53,17 @@ public class UserServiceImpl implements UserService {
                 .orElse(null);
     }
 
+    @Override
+    public User findUserByEmailOrUsername(String username) throws UserNotFoundByEmailException {
+        return userRepository
+                .searchUserByEmailOrUsername(username)
+                .orElseThrow(() -> new UserNotFoundByEmailException(username));
+    }
+
+
+
     private User findByEmailOrUsername(String email, String username) {
-        return userRepository.findByEmailOrUsername(email,username).
+        return userRepository.findUserByEmailOrUsername(email,username).
                 orElse(null);
     }
 
