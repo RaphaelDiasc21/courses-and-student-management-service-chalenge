@@ -1,5 +1,6 @@
 package com.alura.chalenge.application.shared;
 
+import com.alura.chalenge.application.courses.exceptions.InactivateCourseException;
 import com.alura.chalenge.application.shared.exceptions.EntityCreationException;
 import com.alura.chalenge.application.shared.exceptions.EntityNotFoundException;
 import org.springframework.http.*;
@@ -45,5 +46,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,message.toString());
         problemDetail.setProperty("Timestamp", Instant.now());
         return new ResponseEntity<Object>(problemDetail, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = InactivateCourseException.class)
+    protected ProblemDetail handleInactiveCourseException(InactivateCourseException exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,exception.getMessage());
+        problemDetail.setTitle("Course not found");
+        problemDetail.setProperty("Timestamp", Instant.now());
+        return problemDetail;
+    }
+
+    @ExceptionHandler(value = Exception.class)
+    protected ProblemDetail handleException(Exception exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,exception.getMessage());
+        problemDetail.setProperty("Timestamp", Instant.now());
+        return problemDetail;
     }
 }

@@ -66,6 +66,9 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.GET,"/users").hasAnyAuthority("SCOPE_ADMIN");
                     auth.requestMatchers(HttpMethod.POST,"/users").permitAll();
 
+                    auth.requestMatchers(HttpMethod.POST,"/rates").hasAnyAuthority("SCOPE_ESTUDANTE");
+                    auth.requestMatchers(HttpMethod.GET,"/nps/**").hasAnyAuthority("SCOPE_ADMIN");
+
                     auth.requestMatchers("/enrolls").permitAll();
 
                     auth.requestMatchers("/v3/api-docs/**").permitAll();

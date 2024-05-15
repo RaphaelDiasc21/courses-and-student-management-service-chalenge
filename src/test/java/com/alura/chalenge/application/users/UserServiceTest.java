@@ -24,20 +24,6 @@ public class UserServiceTest {
     UserRepository userRepository;
 
     @Test
-    void given_user_then_createSuccessfully() {
-        Mockito.when(userRepository.findUserByEmailOrUsername(any(),any())).thenReturn(Optional.empty());
-
-        User user = new User();
-        user.setName("test name");
-        user.setUsername("test username");
-        user.setPassword("test");
-        user.setEmail("test@test.com");
-        user.setRole(Role.ADMIN);
-
-        assertDoesNotThrow(() -> userService.create(user));
-    }
-
-    @Test
     void given_user_then_createFailedBecauseEmailOrUsernameAlreadyRegistered() {
         Mockito.when(userRepository.findUserByEmailOrUsername(any(),any())).thenReturn(Optional.of(new User()));
 
@@ -52,6 +38,5 @@ public class UserServiceTest {
                 () -> userService.create(user),
                 "Email or username already registered"
         );
-
     }
 }

@@ -35,12 +35,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findInstructorByEmail(String email) throws InstructorNotFoundException {
-        return userRepository.findByEmailAndRoleEquals(email, Role.INSTRUCTOR)
-                .orElseThrow(() -> new InstructorNotFoundException(email));
-    }
-
-    @Override
     public User findById(Long id) throws UserNotFoundException{
         return userRepository
                 .findById(id)

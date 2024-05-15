@@ -1,11 +1,13 @@
 package com.alura.chalenge.application.courses;
 
+import com.alura.chalenge.application.courses.exceptions.InactivateCourseException;
 import com.alura.chalenge.application.courses.services.CourseServiceImpl;
 import com.alura.chalenge.application.shared.enums.Role;
 import com.alura.chalenge.application.shared.exceptions.EntityCreationException;
 import com.alura.chalenge.application.shared.exceptions.EntityNotFoundException;
 import com.alura.chalenge.application.users.User;
 import com.alura.chalenge.application.users.exceptions.InstructorNotFoundException;
+import com.alura.chalenge.application.users.exceptions.UserNotFoundByEmailException;
 import com.alura.chalenge.application.users.services.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,18 +32,19 @@ public class CourseServiceTest {
     UserServiceImpl userService;
 
     @Test
-    void given_course_then_createCourseSuccessfully() throws InstructorNotFoundException {
+    void given_course_then_createCourseSuccessfully() throws InstructorNotFoundException, UserNotFoundByEmailException {
         User courseInstructor = new User();
         courseInstructor.setId(1l);
-        courseInstructor.setRole(Role.INSTRUCTOR);
+        courseInstructor.setRole(Role.INSTRUTOR);
+        courseInstructor.setUsername("test");
 
         Course course = new Course();
         course.setInstructor(courseInstructor);
 
         Mockito.when(courseRepository.findByCode(any())).thenReturn(Optional.empty());
-        Mockito.when(userService.findInstructorByEmail(any())).thenReturn(courseInstructor);
+        Mockito.when(userService.findUserByEmailOrUsername(any())).thenReturn(courseInstructor);
 
-        assertDoesNotThrow(() -> courseService.create(course));
+        assertDoesNotThrow(() -> courseService.create(course,courseInstructor.getUsername()));
         Mockito.verify(courseRepository,Mockito.times(1)).save(any());
     }
 
@@ -49,7 +52,8 @@ public class CourseServiceTest {
     void given_course_then_createCourseFailedBecauseCodeAlreadyRegistered() {
         User courseInstructor = new User();
         courseInstructor.setId(1l);
-        courseInstructor.setRole(Role.INSTRUCTOR);
+        courseInstructor.setRole(Role.INSTRUTOR);
+        courseInstructor.setUsername("test");
 
         Course course = new Course();
         course.setCode("test");
@@ -59,27 +63,37 @@ public class CourseServiceTest {
 
         assertThrows(
                 EntityCreationException.class,
-                () -> courseService.create(course),
+                () -> courseService.create(course,courseInstructor.getUsername()),
                 "Course with code test already registered\""
         );
     }
 
     @Test
-    void given_course_then_createCourseFailedBecauseIsNotAInstructorBeingUsed() throws InstructorNotFoundException {
+    void given_course_then_createCourseFailedBecauseIsNotAInstructorBeingUsed() throws UserNotFoundByEmailException {
         User courseInstructor = new User();
         courseInstructor.setId(1l);
-        courseInstructor.setRole(Role.STUDENT);
+        courseInstructor.setRole(Role.ESTUDANTE);
+        courseInstructor.setUsername("test");
 
         Course course = new Course();
         course.setCode("test");
         course.setInstructor(courseInstructor);
 
         Mockito.when(courseRepository.findByCode(any())).thenReturn(Optional.empty());
-        Mockito.when(userService.findInstructorByEmail(any())).thenThrow(InstructorNotFoundException.class);
+        Mockito.when(userService.findUserByEmailOrUsername(any())).thenThrow(UserNotFoundByEmailException.class);
 
         assertThrows(
-                EntityNotFoundException.class,
-                () -> courseService.create(course)
+                EntityCreationException.class,
+                () -> courseService.create(course,courseInstructor.getUsername())
+        );
+    }
+
+    @Test
+    void given_course_then_inactiveCouseFailedBecauseCourseWithCodeNotFound() {
+        Mockito.when(courseRepository.findByCode(any())).thenReturn(Optional.empty());
+        assertThrows(
+                InactivateCourseException.class,
+                () -> courseService.inactivateCourse("test")
         );
     }
 }
