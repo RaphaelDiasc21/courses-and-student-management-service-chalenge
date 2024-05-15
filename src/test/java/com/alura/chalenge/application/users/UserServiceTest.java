@@ -25,7 +25,7 @@ public class UserServiceTest {
 
     @Test
     void given_user_then_createSuccessfully() {
-        Mockito.when(userRepository.findByEmailOrUsername(any(),any())).thenReturn(Optional.empty());
+        Mockito.when(userRepository.findUserByEmailOrUsername(any(),any())).thenReturn(Optional.empty());
 
         User user = new User();
         user.setName("test name");
@@ -39,7 +39,7 @@ public class UserServiceTest {
 
     @Test
     void given_user_then_createFailedBecauseEmailOrUsernameAlreadyRegistered() {
-        Mockito.when(userRepository.findByEmailOrUsername(any(),any())).thenReturn(Optional.of(new User()));
+        Mockito.when(userRepository.findUserByEmailOrUsername(any(),any())).thenReturn(Optional.of(new User()));
 
         User user = new User();
         user.setName("test name");

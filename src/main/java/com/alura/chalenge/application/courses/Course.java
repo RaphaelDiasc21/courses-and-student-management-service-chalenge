@@ -7,15 +7,7 @@ import com.alura.chalenge.application.shared.enums.Status;
 import com.alura.chalenge.application.users.User;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -36,7 +28,7 @@ public class Course {
     private String description;
 
     @Column
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @Column(name = "creation_date")

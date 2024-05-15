@@ -9,10 +9,10 @@ import com.alura.chalenge.application.shared.constants.PaginationConstants;
 import com.alura.chalenge.application.shared.enums.Status;
 import com.alura.chalenge.application.shared.exceptions.EntityCreationException;
 import com.alura.chalenge.application.shared.exceptions.EntityNotFoundException;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,17 +32,19 @@ public class CourseController {
     private CourseMapper courseMapper;
 
     @PostMapping
-    public ResponseEntity<Course> create(@RequestBody CourseCreateDTO courseCreateDTO) throws EntityCreationException, EntityNotFoundException {
+    public ResponseEntity<Course> create(@RequestBody @Valid CourseCreateDTO courseCreateDTO) throws EntityCreationException, EntityNotFoundException {
         Course course = courseService.create(courseMapper.toEntity(courseCreateDTO));
         return ResponseEntity.status(HttpStatus.CREATED).body(course);
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping
     public ResponseEntity<Void> inactivateCourse(@RequestParam("code") String code) throws InactivateCourseException {
         courseService.inactivateCourse(code);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping
     @Parameters({
             @Parameter(name = "page", example = "0"),

@@ -7,6 +7,8 @@ import com.alura.chalenge.application.users.dtos.UserCreateDTO;
 import com.alura.chalenge.application.users.dtos.UserResponseDTO;
 import com.alura.chalenge.application.users.mappers.UserMapper;
 import com.alura.chalenge.application.users.services.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +24,14 @@ public class UserController {
     private UserMapper userMapper;
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@RequestBody UserCreateDTO userCreateDTO) throws EntityCreationException, EntityNotFoundException {
+    public ResponseEntity<UserResponseDTO> create(@RequestBody @Valid UserCreateDTO userCreateDTO) throws EntityCreationException, EntityNotFoundException {
         User user = userService.create(userMapper.toEntity(userCreateDTO));
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userMapper.toUserResponseDTO(user));
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping
     public ResponseEntity<UserResponseDTO> searchByUsername(@RequestParam("username") String username) {
         User user = userService.findByUsername(username);
