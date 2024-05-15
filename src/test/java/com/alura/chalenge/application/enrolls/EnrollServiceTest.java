@@ -3,8 +3,9 @@ package com.alura.chalenge.application.enrolls;
 import com.alura.chalenge.application.courses.Course;
 import com.alura.chalenge.application.courses.exceptions.CourseInactiveException;
 import com.alura.chalenge.application.courses.exceptions.CourseNotFoundExceptionException;
+import com.alura.chalenge.application.courses.exceptions.CourseWithCodeNotFoundExceptionException;
 import com.alura.chalenge.application.courses.services.CourseServiceImpl;
-import com.alura.chalenge.application.enrolls.services.EnrollEntityServiceImpl;
+import com.alura.chalenge.application.enrolls.services.EnrollServiceImpl;
 import com.alura.chalenge.application.shared.enums.Status;
 import com.alura.chalenge.application.shared.exceptions.EntityCreationException;
 import com.alura.chalenge.application.users.User;
@@ -25,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 @SpringBootTest
 public class EnrollServiceTest {
     @InjectMocks
-    EnrollEntityServiceImpl enrollEntityService;
+    EnrollServiceImpl enrollEntityService;
 
     @Mock
     UserServiceImpl userService;
@@ -37,7 +38,7 @@ public class EnrollServiceTest {
     EnrollRepository enrollRepository;
 
     @Test
-    void given_enroll_then_createSuccessfully() throws UserNotFoundException, CourseNotFoundExceptionException, CourseInactiveException {
+    void given_enroll_then_createSuccessfully() throws UserNotFoundException, CourseNotFoundExceptionException, CourseInactiveException, CourseWithCodeNotFoundExceptionException {
         Course course = new Course();
         course.setId(1l);
 
@@ -46,26 +47,24 @@ public class EnrollServiceTest {
 
         Mockito.when(enrollRepository.findByStudentAndCourse(any(),any())).thenReturn(Optional.empty());
         Mockito.when(userService.findById(any())).thenReturn(student);
-        Mockito.when(courseService.findCourseByIdAndActive(any())).thenReturn(course);
+        Mockito.when(courseService.findCourseByCodeAndActive(any())).thenReturn(course);
 
-        Enroll enroll = new Enroll();
-        enroll.setStudent(student);
-        enroll.setCourse(course);
 
-        assertDoesNotThrow(() -> enrollEntityService.create(enroll));
+        assertDoesNotThrow(() -> enrollEntityService.create("test","test"));
     }
 
     @Test
-    void given_enroll_then_createFailedBecauseCourseIsInactive() throws CourseNotFoundExceptionException, CourseInactiveException {
+    void given_enroll_then_createFailedBecauseCourseIsInactive() throws CourseInactiveException, CourseWithCodeNotFoundExceptionException {
         Course course = new Course();
         course.setId(1l);
+        course.setCode("ERT");
         course.setStatus(Status.INACTIVE);
 
         User student = new User();
         student.setId(1l);
 
 
-        Mockito.when(courseService.findCourseByIdAndActive(course.getId())).thenThrow(new CourseInactiveException(course.getId()));
+        Mockito.when(courseService.findCourseByCodeAndActive(course.getCode())).thenThrow(new CourseInactiveException());
         Mockito.when(enrollRepository.findByStudentAndCourse(any(),any())).thenReturn(Optional.empty());
 
         Enroll enroll = new Enroll();
@@ -74,8 +73,8 @@ public class EnrollServiceTest {
 
         assertThrows(
                 EntityCreationException.class,
-                () -> enrollEntityService.create(enroll),
-                "Course with id 1 is inactive"
+                () -> enrollEntityService.create("test",course.getCode()),
+                "Course is inactive"
             );
     }
 
@@ -96,7 +95,7 @@ public class EnrollServiceTest {
 
         assertThrows(
                 EntityCreationException.class,
-                () -> enrollEntityService.create(enroll),
+                () -> enrollEntityService.create("test","test"),
                 "Student already enrolled in the course"
         );
     }

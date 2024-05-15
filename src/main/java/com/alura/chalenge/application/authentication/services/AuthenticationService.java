@@ -38,7 +38,7 @@ public class AuthenticationService {
 
             var claims = JwtClaimsSet.builder()
                     .issuer("coures-and-users-management-service")
-                    .subject(user.getEmail())
+                    .subject(user.getId().toString())
                     .issuedAt(now)
                     .expiresAt(now.plusSeconds(expiration))
                     .claim("scope",scope)

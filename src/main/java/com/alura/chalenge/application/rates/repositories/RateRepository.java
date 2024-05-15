@@ -1,5 +1,6 @@
-package com.alura.chalenge.application.rates;
+package com.alura.chalenge.application.rates.repositories;
 
+import com.alura.chalenge.application.rates.Rate;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
