@@ -60,7 +60,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(HttpMethod.GET,"/courses").hasAnyAuthority("SCOPE_ADMIN");
-                    auth.requestMatchers(HttpMethod.PUT,"/courses").hasAnyAuthority("SCOPE_ADMIN");
+                    auth.requestMatchers(HttpMethod.PUT,"/courses/**").hasAnyAuthority("SCOPE_ADMIN");
                     auth.requestMatchers(HttpMethod.POST,"/courses").permitAll();
 
                     auth.requestMatchers(HttpMethod.GET,"/users").hasAnyAuthority("SCOPE_ADMIN");

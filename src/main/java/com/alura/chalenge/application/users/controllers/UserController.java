@@ -7,6 +7,7 @@ import com.alura.chalenge.application.users.dtos.UserCreateDTO;
 import com.alura.chalenge.application.users.dtos.UserResponseDTO;
 import com.alura.chalenge.application.users.mappers.UserMapper;
 import com.alura.chalenge.application.users.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,12 @@ public class UserController {
     @Autowired
     private UserMapper userMapper;
 
+    @Operation(
+            summary = "Create a user",
+            description = "Create a user based on informations required",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "The username fields only accepts textual fieds in lowercase, without spaces or special characters")
+    )
     @PostMapping
     public ResponseEntity<UserResponseDTO> create(@RequestBody @Valid UserCreateDTO userCreateDTO) throws EntityCreationException, EntityNotFoundException {
         User user = userService.create(userMapper.toEntity(userCreateDTO));

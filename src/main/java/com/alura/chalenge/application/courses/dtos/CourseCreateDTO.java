@@ -2,6 +2,8 @@ package com.alura.chalenge.application.courses.dtos;
 
 import com.alura.chalenge.application.courses.validators.StatusEnumValidator;
 import com.alura.chalenge.application.shared.enums.Status;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;

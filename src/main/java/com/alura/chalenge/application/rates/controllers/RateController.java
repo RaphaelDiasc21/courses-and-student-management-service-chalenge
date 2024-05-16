@@ -8,6 +8,7 @@ import com.alura.chalenge.application.rates.mappers.RateMapper;
 import com.alura.chalenge.application.rates.services.RateService;
 import com.alura.chalenge.application.shared.exceptions.EntityCreationException;
 import com.alura.chalenge.application.shared.exceptions.EntityNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,12 @@ public class RateController {
     @Autowired
     private RateMapper rateMapper;
 
-
+    @Operation(
+            summary = "Create a rate",
+            description = "Create an rate based on informations required, getting the user info from token authenticated",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "The rate field is the score of the rate")
+    )
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping
     public ResponseEntity<RateResponseDTO> create(@RequestBody RateCreateDTO rateCreateDTO) throws EntityCreationException, EntityNotFoundException {

@@ -8,6 +8,7 @@ import com.alura.chalenge.application.enrolls.mappers.EnrollMapper;
 import com.alura.chalenge.application.enrolls.services.EnrollService;
 import com.alura.chalenge.application.shared.exceptions.EntityCreationException;
 import com.alura.chalenge.application.shared.exceptions.EntityNotFoundException;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,12 @@ public class EnrollController {
     @Autowired
     private EnrollMapper enrollMapper;
 
+    @Operation(
+            summary = "Create a enroll",
+            description = "Create an enroll based on informations required",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "The studentIdentification expects the student email or student username")
+    )
     @PostMapping
     public ResponseEntity<EnrollResponseDTO> create(@RequestBody @Valid EnrollCreateDTO enrollCreateDTO) throws EntityCreationException, EntityNotFoundException {
         Enroll enroll = enrollService.create(enrollCreateDTO.getStudentIdentification(),enrollCreateDTO.getCourseCode());

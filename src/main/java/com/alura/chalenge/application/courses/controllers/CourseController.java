@@ -10,6 +10,8 @@ import com.alura.chalenge.application.shared.constants.PaginationConstants;
 import com.alura.chalenge.application.shared.enums.Status;
 import com.alura.chalenge.application.shared.exceptions.EntityCreationException;
 import com.alura.chalenge.application.shared.exceptions.EntityNotFoundException;
+import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -36,6 +38,12 @@ public class CourseController {
     @Autowired
     private CourseMapper courseMapper;
 
+    @Operation(
+            summary = "Create a course",
+            description = "Create a course based on informations required",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "The instructorIdentification field, expects the instructor email or the instructor username, also the code fields only accepts textual fieds without spaces or special characters")
+    )
     @PostMapping
     public ResponseEntity<CourseResponseDTO> create(@RequestBody @Valid CourseCreateDTO courseCreateDTO) throws EntityCreationException, EntityNotFoundException {
         Course course = courseService.create(
@@ -47,8 +55,8 @@ public class CourseController {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
-    @PutMapping
-    public ResponseEntity<Void> inactivateCourse(@RequestParam("code") String code) throws InactivateCourseException {
+    @PutMapping("/{code}")
+    public ResponseEntity<Void> inactivateCourse(@PathVariable("code") String code) throws InactivateCourseException {
         courseService.inactivateCourse(code);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
