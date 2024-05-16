@@ -1,17 +1,17 @@
 # Gerenciador de cursos, alunos e matriculas
 
-API REST que tem por finalidade gerenciar 3 principais domininios:
+API REST que tem por finalidade gerenciar 3 principais domínios:
  - Curso
  - Aluno
  - Matricula
 
 Adicionalmente foi  implementado o sistema de avaliação e relatório de Net Promoter Score, conforme solicitado.
-Os dominios referentes a esses requisitos são:
+Os domínios referentes a esses requisitos são:
  - Rate
  - NPS
 
 O sistema de avaliação, bem como o relatorio NPS, são utilizados através dos endpoints:
- - ``/rates`` - Criar avaliação referente a determinado curso (através do código). Esse endpoint
+ - ``/rates`` - Criar avaliação referente a determinado curso (através do código do curso). Esse endpoint
 apenas é acessível por um usuario de Role `ESTUDANTE`
 
  - ``/nps/courses-nps`` - Endpoint que traz o relatorio referente ao nps de todos os cursos que tenham mais de 4 matricula.
